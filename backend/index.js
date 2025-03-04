@@ -12,6 +12,7 @@ const listingsRoutes = require('./routes/listingsRoutes');
 const bookingsRoutes = require('./routes/bookingsRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const paymentsRoutes = require('./routes/paymentsRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Middleware
 app.use(express.json());
@@ -25,6 +26,8 @@ app.use('/api/listings', listingsRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/payments', paymentsRoutes);
+app.use('/api/auth', authRoutes);
+
 
 app.get('/', (req, res) => {
     res.send("Welcome to the Rentify API");

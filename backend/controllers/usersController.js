@@ -87,20 +87,7 @@ const getUserById = async (req, res) => {
     }
 };
 
-// add user
-const addUser = async (req, res) => {
-    try {
-        const { name, email, password, phone } = req.body;
-        const [result] = await db.query('INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)', [name, email, password, phone]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.status(201).json({ message: 'User added successfully' });
 
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
 
 // Update user (admin only)
 const updateUser = async (req, res) => {
@@ -149,12 +136,25 @@ const deleteUser = async (req, res) => {
     }
 };
 
+// Add user
+// const addUser = async (req, res) => {
+//     try {
+//         const { name, email, password, phone } = req.body;
+//         const [result] = await db.query('INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)', [name, email, password, phone]);
+//         if (result.affectedRows === 0) {
+//             return res.status(404).json({ message: 'User not found' });
+//         }
+//         res.status(201).json({ message: 'User added successfully' });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// }
+
 module.exports = {
     getProfile,
     updateProfile,
     getAllUsers,
     getUserById,
-    addUser,
     updateUser,
     deleteUser
 };
