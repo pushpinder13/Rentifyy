@@ -15,6 +15,9 @@ exports.createBooking = async (req, res) => {
 exports.getAllBookings = async (req, res) => {
     try {
         const [bookings] = await db.query('SELECT * FROM Bookings');
+        if(bookings.length === 0) {
+            return res.status(404).json({ error: 'No bookings found' });
+        }
         res.status(200).json(bookings);
     } catch (error) {
         res.status(500).json({ error: 'Error retrieving bookings' });
