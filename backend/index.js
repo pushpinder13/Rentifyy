@@ -3,20 +3,37 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const dotenv = require('dotenv');
-dotenv.config()
+dotenv.config();
 
-//middleware
+// Import routes
+const usersRoutes = require('./routes/usersRoutes');
+const categoriesRoutes = require('./routes/categoriesRoutes');
+const listingsRoutes = require('./routes/listingsRoutes');
+const bookingsRoutes = require('./routes/bookingsRoutes');
+const reviewsRoutes = require('./routes/reviewsRoutes');
+const paymentsRoutes = require('./routes/paymentsRoutes');
+const authRoutes = require('./routes/authRoutes');
+
+// Middleware
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//routes
+// Routes
+app.use('/api/users', usersRoutes);
+app.use('/api/categories', categoriesRoutes);
+app.use('/api/listings', listingsRoutes);
+app.use('/api/bookings', bookingsRoutes);
+app.use('/api/reviews', reviewsRoutes);
+app.use('/api/payments', paymentsRoutes);
+app.use('/api/auth', authRoutes);
+
+
 app.get('/', (req, res) => {
-    res.send("hlo");
+    res.send("Welcome to the Rentify API");
 });
 
-//listen port
+// Listen on port
 app.listen(process.env.PORT, () => {
-    
     console.log(`Running on: http://localhost:${process.env.PORT}`);
 });
