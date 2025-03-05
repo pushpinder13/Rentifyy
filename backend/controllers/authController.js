@@ -3,11 +3,11 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
 const register = async (req, res) => {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, phone } = req.body ;
     try {
-        const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+        const [existingUser] = await db.query('SELECT * FROM users WHERE email = ?', [email]) ;
         if (existingUser.length > 0) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'User already exists' }) ;
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const [result] = await db.query('INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)', [name, email, hashedPassword, phone]);
