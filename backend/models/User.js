@@ -34,6 +34,10 @@ const User = sequelize.define('User', {
     is_active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+    },
+    profile_photo: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     timestamps: true,

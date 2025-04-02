@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 const { errorHandler } = require('./middleware/errorHandler');
 const app = express();
 
@@ -14,11 +15,15 @@ const bookingsRoutes = require('./routes/bookingsRoutes');
 const reviewsRoutes = require('./routes/reviewsRoutes');
 const paymentsRoutes = require('./routes/paymentsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const uploadRoutes = require('./routes/uploadRoutes');
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', usersRoutes);
@@ -27,6 +32,7 @@ app.use('/api/listings', listingsRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/reviews', reviewsRoutes);
 app.use('/api/payments', paymentsRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/', (req, res) => {
     res.json({
