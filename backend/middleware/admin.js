@@ -9,7 +9,7 @@ const isAdmin = async (req, res, next) => {
                 error: 'AUTH_REQUIRED'
             });
         }
-
+    
         if (req.user.role !== 'admin') {
             return res.status(403).json({ 
                 status: 'error',

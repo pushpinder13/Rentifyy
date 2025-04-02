@@ -31,13 +31,11 @@ const authenticateToken = async (req, res, next) => {
             });
         }
 
-        // Verify user exists in database
         const user = await User.findByPk(decoded.id);
         if (!user) {
             throw new NotFoundError('User not found');
         }
 
-        // Add user to request object
         req.user = user;
         next();
     } catch (error) {

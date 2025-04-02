@@ -23,13 +23,17 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    role: {
+        type: DataTypes.ENUM('renter', 'owner', 'admin'),
+        defaultValue: 'renter'
+    },
     phone: {
         type: DataTypes.STRING(20),
         allowNull: true
     },
-    role: {
-        type: DataTypes.ENUM('admin', 'owner', 'renter'),
-        defaultValue: 'renter'
+    is_active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 }, {
     timestamps: true,

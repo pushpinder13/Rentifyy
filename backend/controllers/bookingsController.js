@@ -35,6 +35,7 @@ exports.getBookingById = async (req, res) => {
     }
 };
 
+
 // Update a booking
 exports.updateBooking = async (req, res) => {
     const { id } = req.params;

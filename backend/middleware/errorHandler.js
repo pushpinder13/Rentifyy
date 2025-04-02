@@ -48,7 +48,7 @@ const errorHandler = (err, req, res, next) => {
             error: 'INVALID_TOKEN'
         });
     }
-
+    // Token expired errors
     if (err.name === 'TokenExpiredError') {
         return res.status(401).json({
             status: 'error',
