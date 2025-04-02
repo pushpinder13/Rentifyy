@@ -1,65 +1,67 @@
-const db = require('../config/db');
+const Payment = require('../models/Payment');
 
 // Create a new payment
 exports.createPayment = async (req, res) => {
     const { booking_id, amount, payment_method } = req.body;
     try {
-        const [result] = await db.query('INSERT INTO Payments (booking_id, amount, payment_method) VALUES (?, ?, ?)', [booking_id, amount, payment_method]);
-        res.status(201).json({ id: result.insertId, booking_id, amount, payment_method });
+        const payment = await Payment.create({ booking_id, amount, payment_method });
+        res.status(201).json({ message: 'Payment created successfully', payment });
     } catch (error) {
-        res.status(500).json({ error: 'Error creating payment' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Retrieve a payment by ID
+// Get all payments
+exports.getAllPayments = async (req, res) => {
+    try {
+        const payments = await Payment.findAll();
+        res.status(200).json(payments);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Get a payment by ID
 exports.getPaymentById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await db.query('SELECT * FROM Payments WHERE id = ?', [id]);
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Payment not found' });
+        const payment = await Payment.findByPk(id);
+        if (!payment) {
+            return res.status(404).json({ message: 'Payment not found' });
         }
-        res.json(rows[0]);
+        res.status(200).json(payment);
     } catch (error) {
-        res.status(500).json({ error: 'Error retrieving payment' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Retrieve all payments
-exports.getAllPayments = async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT * FROM Payments');
-        res.json(rows);
-    } catch (error) {
-        res.status(500).json({ error: 'Error retrieving payments' });
-    }
-};
-
-// Update a payment by ID
+// Update a payment
 exports.updatePayment = async (req, res) => {
     const { id } = req.params;
     const { amount, payment_method } = req.body;
     try {
-        const [result] = await db.query('UPDATE Payments SET amount = ?, payment_method = ? WHERE id = ?', [amount, payment_method, id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Payment not found' });
+        const payment = await Payment.findByPk(id);
+        if (!payment) {
+            return res.status(404).json({ message: 'Payment not found' });
         }
-        res.json({ message: 'Payment updated successfully' });
+        await payment.update({ amount, payment_method });
+        res.status(200).json({ message: 'Payment updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error updating payment' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Delete a payment by ID
+// Delete a payment
 exports.deletePayment = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await db.query('DELETE FROM Payments WHERE id = ?', [id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Payment not found' });
+        const payment = await Payment.findByPk(id);
+        if (!payment) {
+            return res.status(404).json({ message: 'Payment not found' });
         }
-        res.json({ message: 'Payment deleted successfully' });
+        await payment.destroy();
+        res.status(200).json({ message: 'Payment deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting payment' });
+        res.status(500).json({ message: error.message });
     }
 };

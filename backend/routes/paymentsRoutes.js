@@ -1,21 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const paymentsController = require('../controllers/paymentsController');
-const auth = require('../middleware/auth');
+const { authenticateToken, isActiveUser } = require('../middleware/auth');
+const { isAdmin, isAdminOrOwner } = require('../middleware/admin');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Route to create a new payment
-router.post('/', auth.authenticateToken, paymentsController.createPayment);
+// Create payment
+router.post('/', authenticateToken, isActiveUser, asyncHandler(paymentsController.createPayment));
 
-// Route to retrieve all payments
-router.get('/', auth.authenticateToken, paymentsController.getAllPayments);
+// Get all payments (admin only)
+router.get('/', authenticateToken, isAdmin, asyncHandler(paymentsController.getAllPayments));
 
-// Route to retrieve a specific payment by ID
-router.get('/:id', auth.authenticateToken,  paymentsController.getPaymentById);
+// Get specific payment
+router.get('/:id', authenticateToken, isAdminOrOwner, asyncHandler(paymentsController.getPaymentById));
 
-// Route to update a payment by ID
-router.put('/:id', auth.authenticateToken, paymentsController.updatePayment);
+// Update payment
+router.put('/:id', authenticateToken, isAdminOrOwner, asyncHandler(paymentsController.updatePayment));
 
-// Route to delete a payment by ID
-router.delete('/:id', auth.authenticateToken, paymentsController.deletePayment);
+// Delete payment
+router.delete('/:id', authenticateToken, isAdminOrOwner, asyncHandler(paymentsController.deletePayment));
 
 module.exports = router;

@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const reviewsController = require('../controllers/reviewsController');
+const { authenticateToken, isActiveUser } = require('../middleware/auth');
+const { isAdminOrOwner } = require('../middleware/admin');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Create a new review
-router.post('/', reviewsController.createReview);
+// Create review
+router.post('/', authenticateToken, isActiveUser, asyncHandler(reviewsController.createReview));
 
-// Get all reviews
-router.get('/', reviewsController.getAllReviews);
+// Get all reviews for a listing
+router.get('/listing/:listing_id', asyncHandler(reviewsController.getAllReviews));
 
-// Get a review by ID
-router.get('/:id', reviewsController.getReviewById);
+// Get specific review
+router.get('/:id', asyncHandler(reviewsController.getReviewById));
 
-// Update a review by ID
-router.put('/:id', reviewsController.updateReview);
+// Update review
+router.put('/:id', authenticateToken, isAdminOrOwner, asyncHandler(reviewsController.updateReview));
 
-// Delete a review by ID
-router.delete('/:id', reviewsController.deleteReview);
+// Delete review
+router.delete('/:id', authenticateToken, isAdminOrOwner, asyncHandler(reviewsController.deleteReview));
 
 module.exports = router;
