@@ -24,5 +24,5 @@
 
 ### 1️⃣ Clone the repository  
 ```sh
-git clone https://github.com/yourusername/rentifyy.git  
+git clone https://github.com/pupshpinder13/rentifyy.git  
 cd rentifyy
