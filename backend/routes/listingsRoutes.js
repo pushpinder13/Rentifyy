@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const listingsController = require('../controllers/listingsController');
+const { authenticateToken, isActiveUser } = require('../middleware/auth');
+const { isAdminOrOwner } = require('../middleware/admin');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Create a new listing
-router.post('/', listingsController.createListing);
+// Create listing
+router.post('/', authenticateToken, isActiveUser, asyncHandler(listingsController.createListing));
 
-// Get all listings
-router.get('/', listingsController.getAllListings);
+// Get all listings (public)
+router.get('/', asyncHandler(listingsController.getAllListings));
 
-// Get a single listing by ID
-router.get('/:id', listingsController.getListingById);
+// Get specific listing (public)
+router.get('/:id', asyncHandler(listingsController.getListingById));
 
-// Update a listing by ID
-router.put('/:id', listingsController.updateListing);
+// Update listing
+router.put('/:id', authenticateToken, isAdminOrOwner, asyncHandler(listingsController.updateListing));
 
-// Delete a listing by ID
-router.delete('/:id', listingsController.deleteListing);
+// Delete listing
+router.delete('/:id', authenticateToken, isAdminOrOwner, asyncHandler(listingsController.deleteListing));
 
 module.exports = router;

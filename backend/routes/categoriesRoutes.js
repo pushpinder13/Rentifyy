@@ -1,20 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const categoriesController = require('../controllers/categoriesController');
+const { authenticateToken, isActiveUser } = require('../middleware/auth');
+const { isAdmin } = require('../middleware/admin');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Route to create a new category
-router.post('/', categoriesController.createCategory);
+// Create category (admin only)
+router.post('/', authenticateToken, isAdmin, asyncHandler(categoriesController.createCategory));
 
-// Route to retrieve all categories
-router.get('/', categoriesController.getAllCategories);
+// Get all categories (public)
+router.get('/', asyncHandler(categoriesController.getAllCategories));
 
-// Route to retrieve a category by ID
-router.get('/:id', categoriesController.getCategoryById);
+// Get specific category (public)
+router.get('/:id', asyncHandler(categoriesController.getCategoryById));
 
-// Route to update a category by ID
-router.put('/:id', categoriesController.updateCategory);
+// Update category (admin only)
+router.put('/:id', authenticateToken, isAdmin, asyncHandler(categoriesController.updateCategory));
 
-// Route to delete a category by ID
-router.delete('/:id', categoriesController.deleteCategory);
+// Delete category (admin only)
+router.delete('/:id', authenticateToken, isAdmin, asyncHandler(categoriesController.deleteCategory));
 
 module.exports = router;

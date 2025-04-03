@@ -1,38 +1,37 @@
-const db = require('../config/db');
+const Listing = require('../models/Listing');
 
 // Create a new listing
 exports.createListing = async (req, res) => {
     const { title, description, category_id, price, location, owner_id } = req.body;
     try {
-        const [result] = await db.query('INSERT INTO Listings (title, description, category_id, price, location, owner_id) VALUES (?, ?, ?, ?, ?, ?)', 
-            [title, description, category_id, price, location, owner_id]);
-        res.status(201).json({ id: result.insertId, title, description, category_id, price, location, owner_id });
+        const listing = await Listing.create({ title, description, category_id, price, location, owner_id });
+        res.status(201).json({ message: 'Listing created successfully', listing });
     } catch (error) {
-        res.status(500).json({ error: 'Error creating listing' });
+        res.status(500).json({ message: error.message });
     }
 };
 
 // Get all listings
 exports.getAllListings = async (req, res) => {
     try {
-        const [listings] = await db.query('SELECT * FROM Listings');
+        const listings = await Listing.findAll();
         res.status(200).json(listings);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching listings' });
+        res.status(500).json({ message: error.message });
     }
 };
 
-// Get a single listing by ID
+// Get a listing by ID
 exports.getListingById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [listing] = await db.query('SELECT * FROM Listings WHERE id = ?', [id]);
-        if (listing.length === 0) {
-            return res.status(404).json({ error: 'Listing not found' });
+        const listing = await Listing.findByPk(id);
+        if (!listing) {
+            return res.status(404).json({ message: 'Listing not found' });
         }
-        res.status(200).json(listing[0]);
+        res.status(200).json(listing);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching listing' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -41,14 +40,14 @@ exports.updateListing = async (req, res) => {
     const { id } = req.params;
     const { title, description, category_id, price, location, owner_id } = req.body;
     try {
-        const [result] = await db.query('UPDATE Listings SET title = ?, description = ?, category_id = ?, price = ?, location = ?, owner_id = ? WHERE id = ?', 
-            [title, description, category_id, price, location, owner_id, id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Listing not found' });
+        const listing = await Listing.findByPk(id);
+        if (!listing) {
+            return res.status(404).json({ message: 'Listing not found' });
         }
+        await listing.update({ title, description, category_id, price, location, owner_id });
         res.status(200).json({ message: 'Listing updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error updating listing' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -56,12 +55,13 @@ exports.updateListing = async (req, res) => {
 exports.deleteListing = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await db.query('DELETE FROM Listings WHERE id = ?', [id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Listing not found' });
+        const listing = await Listing.findByPk(id);
+        if (!listing) {
+            return res.status(404).json({ message: 'Listing not found' });
         }
+        await listing.destroy();
         res.status(200).json({ message: 'Listing deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting listing' });
+        res.status(500).json({ message: error.message });
     }
 };

@@ -1,13 +1,13 @@
-const db = require('../config/db');
+const Review = require('../models/Review');
 
 // Create a new review
 exports.createReview = async (req, res) => {
     const { listing_id, renter_id, rating, comment } = req.body;
     try {
-        const [result] = await db.query('INSERT INTO Reviews (listing_id, renter_id, rating, comment) VALUES (?, ?, ?, ?)', [listing_id, renter_id, rating, comment]);
-        res.status(201).json({ id: result.insertId, listing_id, renter_id, rating, comment });
+        const review = await Review.create({ listing_id, renter_id, rating, comment });
+        res.status(201).json({ message: 'Review created successfully', review });
     } catch (error) {
-        res.status(500).json({ error: 'Error creating review' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -15,10 +15,10 @@ exports.createReview = async (req, res) => {
 exports.getAllReviews = async (req, res) => {
     const { listing_id } = req.params;
     try {
-        const [reviews] = await db.query('SELECT * FROM Reviews WHERE listing_id = ?', [listing_id]);
+        const reviews = await Review.findAll({ where: { listing_id } });
         res.status(200).json(reviews);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching reviews' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -26,14 +26,13 @@ exports.getAllReviews = async (req, res) => {
 exports.getReviewById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [reviews] = await db.query('SELECT * FROM Reviews WHERE id = ?', [id]);
-        if (reviews.length > 0) {
-            res.status(200).json(reviews[0]);
-        } else {
-            res.status(404).json({ message: 'Review not found' });
+        const review = await Review.findByPk(id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
         }
+        res.status(200).json(review);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching review' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -42,14 +41,14 @@ exports.updateReview = async (req, res) => {
     const { id } = req.params;
     const { rating, comment } = req.body;
     try {
-        const [result] = await db.query('UPDATE Reviews SET rating = ?, comment = ? WHERE id = ?', [rating, comment, id]);
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Review updated successfully' });
-        } else {
-            res.status(404).json({ message: 'Review not found' });
+        const review = await Review.findByPk(id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
         }
+        await review.update({ rating, comment });
+        res.status(200).json({ message: 'Review updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error updating review' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -57,13 +56,13 @@ exports.updateReview = async (req, res) => {
 exports.deleteReview = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await db.query('DELETE FROM Reviews WHERE id = ?', [id]);
-        if (result.affectedRows > 0) {
-            res.status(200).json({ message: 'Review deleted successfully' });
-        } else {
-            res.status(404).json({ message: 'Review not found' });
+        const review = await Review.findByPk(id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
         }
+        await review.destroy();
+        res.status(200).json({ message: 'Review deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting review' });
+        res.status(500).json({ message: error.message });
     }
 };

@@ -1,21 +1,23 @@
 const express = require('express');
 const router = express.Router();
 const bookingsController = require('../controllers/bookingsController');
-// const auth = require('../middleware/auth');                  
+const { authenticateToken, isActiveUser } = require('../middleware/auth');
+const { isAdmin, isAdminOrOwner } = require('../middleware/admin');
+const { asyncHandler } = require('../middleware/errorHandler');
 
-// Create a new booking
-router.post('/', bookingsController.createBooking);
+// Create booking
+router.post('/', authenticateToken, isActiveUser, asyncHandler(bookingsController.createBooking));
 
-// Get all bookings
-router.get('/', bookingsController.getAllBookings);
+// Get all bookings (admin only)
+router.get('/', authenticateToken, isAdmin, asyncHandler(bookingsController.getAllBookings));
 
-// Get a specific booking by ID             
-router.get('/:id', bookingsController.getBookingById);
+// Get specific booking
+router.get('/:id', authenticateToken, isAdminOrOwner, asyncHandler(bookingsController.getBookingById));
 
-// Update a booking by ID
-router.put('/:id', bookingsController.updateBooking);
+// Update booking
+router.put('/:id', authenticateToken, isAdminOrOwner, asyncHandler(bookingsController.updateBooking));
 
-// Delete a booking by ID
-router.delete('/:id', bookingsController.deleteBooking);
+// Delete booking
+router.delete('/:id', authenticateToken, isAdminOrOwner, asyncHandler(bookingsController.deleteBooking));
 
 module.exports = router;

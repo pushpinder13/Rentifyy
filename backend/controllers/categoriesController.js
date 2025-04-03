@@ -1,23 +1,22 @@
-const db = require('../config/db');
+const Category = require('../models/Category');
 
 // Create a new category
 exports.createCategory = async (req, res) => {
     const { name } = req.body;
     try {
-        const [result] = await db.query('INSERT INTO Categories (name) VALUES (?)', [name]);
-        res.status(201).json({ id: result.insertId, name });
+        const category = await Category.create({ name });
+        res.status(201).json({ message: 'Category created successfully', category });
     } catch (error) {
-        res.status(500).json({ error: 'Error creating category' });
+        res.status(500).json({ message: error.message });
     }
 };
-
 // Get all categories
 exports.getAllCategories = async (req, res) => {
     try {
-        const [categories] = await db.query('SELECT * FROM Categories');
+        const categories = await Category.findAll();
         res.status(200).json(categories);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching categories' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -25,13 +24,13 @@ exports.getAllCategories = async (req, res) => {
 exports.getCategoryById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [category] = await db.query('SELECT * FROM Categories WHERE id = ?', [id]);
-        if (category.length === 0) {
-            return res.status(404).json({ error: 'Category not found' });
+        const category = await Category.findByPk(id);
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
         }
-        res.status(200).json(category[0]);
+        res.status(200).json(category);
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching category' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -40,13 +39,14 @@ exports.updateCategory = async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
     try {
-        const [result] = await db.query('UPDATE Categories SET name = ? WHERE id = ?', [name, id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Category not found' });
+        const category = await Category.findByPk(id);
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
         }
-        res.status(200).json({ id, name });
+        await category.update({ name });
+        res.status(200).json({ message: 'Category updated successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error updating category' });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -54,12 +54,13 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await db.query('DELETE FROM Categories WHERE id = ?', [id]);
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Category not found' });
+        const category = await Category.findByPk(id);
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
         }
-        res.status(204).send();
+        await category.destroy();
+        res.status(200).json({ message: 'Category deleted successfully' });
     } catch (error) {
-        res.status(500).json({ error: 'Error deleting category' });
+        res.status(500).json({ message: error.message });
     }
 };
