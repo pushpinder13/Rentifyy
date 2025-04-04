@@ -25,7 +25,9 @@ const Header = () => {
              justify-center cursor-pointer'> <FaSearch/> </button>
         </div>
         <div>
+        <Link to={"/register"} className='text-[24px] font-[700] Leading-[120%]' >
             <div><FaUser/> </div>
+            </Link>
         </div>
     </header>
   )
