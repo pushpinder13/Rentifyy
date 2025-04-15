@@ -16,7 +16,7 @@ const Hero = () => {
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum doloribus dolorem accusantium, ducimus obcaecati illum voluptatum incidunt ipsum perspiciatis. Culpa facilis quidem, in placeat laborum dolor earum recusandae ducimus fuga totam qui architecto laudantium deleniti aspernatur accusantium quas id incidunt eum nisi sint inventore? Dolore facilis ratione culpa amet, mollitia ducimus saepe quam temporibus provident.</p>
                     <div className='flex gap-3'>
                         <a href="#listing" className='text-[14px] font-[500] bg-[#404040] px-7 py-2.5 text-white flex items-center justify-center rounded-full'>Explore Properties</a>
-                        <Link to={""} className='text-[14px] font-[500] bg-[#7a62fe] px-7 py-2.5 text-white transition-all flex items-center justify-center rounded-full ' ><span className='text-[20px] font-[500] pr-1'>+</span>Add Property </Link>
+                        <Link to={"/create-listing"} className='text-[14px] font-[500] bg-[#7a62fe] px-7 py-2.5 text-white transition-all flex items-center justify-center rounded-full ' ><span className='text-[20px] font-[500] pr-1'>+</span>Add Property </Link>
                     </div>
                     <div className='flex relative '>
                         <img src={circle} alt="" className='rounded-full h-[99px] z-30' />
