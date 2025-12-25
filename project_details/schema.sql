@@ -7,17 +7,13 @@ CREATE TABLE Users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
-    role ENUM('admin', 'owner', 'renter') DEFAULT 'renter', 
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    role ENUM('admin', 'owner', 'renter') DEFAULT 'renter',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE Categories (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE Listings (
@@ -30,7 +26,6 @@ CREATE TABLE Listings (
     owner_id INT,
     status ENUM('available', 'rented', 'inactive') DEFAULT 'available',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES Categories(id) ON DELETE CASCADE
 );
@@ -43,7 +38,6 @@ CREATE TABLE Bookings (
     end_date DATE NOT NULL,
     status ENUM('pending', 'confirmed', 'cancelled') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (listing_id) REFERENCES Listings(id) ON DELETE CASCADE,
     FOREIGN KEY (renter_id) REFERENCES Users(id) ON DELETE CASCADE
 );
@@ -55,7 +49,6 @@ CREATE TABLE Reviews (
     rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (listing_id) REFERENCES Listings(id) ON DELETE CASCADE,
     FOREIGN KEY (renter_id) REFERENCES Users(id) ON DELETE CASCADE
 );
@@ -67,6 +60,5 @@ CREATE TABLE Payments (
     payment_method ENUM('credit_card', 'debit_card', 'paypal', 'upi') NOT NULL,
     status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (booking_id) REFERENCES Bookings(id) ON DELETE CASCADE
 );
