@@ -34,9 +34,19 @@ const Review = sequelize.define('Review', {
     comment: {
         type: DataTypes.TEXT,
         allowNull: false
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     tableName: 'reviews'
 });
 

@@ -39,16 +39,26 @@ const Listing = sequelize.define('Listing', {
             key: 'id'
         }
     },
-    is_active: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: true
+    status: {
+        type: DataTypes.ENUM('pending', 'available', 'rented', 'inactive', 'rejected'),
+        defaultValue: 'pending'
     },
     images: {
         type: DataTypes.JSON,
         defaultValue: []
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     tableName: 'listings'
 });
 

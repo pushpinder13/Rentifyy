@@ -31,16 +31,22 @@ const Booking = sequelize.define('Booking', {
         type: DataTypes.DATE,
         allowNull: false
     },
-    total_price: {
-        type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
-    },
     status: {
         type: DataTypes.ENUM('pending', 'confirmed', 'cancelled', 'completed'),
         defaultValue: 'pending'
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     tableName: 'bookings'
 });
 

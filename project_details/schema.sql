@@ -28,7 +28,7 @@ CREATE TABLE Listings (
     price DECIMAL(10,2) NOT NULL,
     location VARCHAR(255),
     owner_id INT,
-    status ENUM('available', 'rented', 'inactive') DEFAULT 'available',
+    status ENUM('pending', 'available', 'rented', 'inactive', 'rejected') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE CASCADE,

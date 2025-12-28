@@ -1,4 +1,5 @@
 const { verifyToken } = require('../config/jwt');
+const { Listing } = require('../models');
 
 const isAdmin = async (req, res, next) => {
     try {
@@ -34,12 +35,28 @@ const isAdminOrOwner = async (req, res, next) => {
             });
         }
 
-        const resourceId = parseInt(req.params.id);
-        if (req.user.role !== 'admin' && req.user.id !== resourceId) {
+        // If user is admin, allow access
+        if (req.user.role === 'admin') {
+            return next();
+        }
+
+        // Check if user owns the listing
+        const listingId = parseInt(req.params.id);
+        const listing = await Listing.findByPk(listingId);
+        
+        if (!listing) {
+            return res.status(404).json({ 
+                status: 'error',
+                message: 'Listing not found',
+                error: 'LISTING_NOT_FOUND'
+            });
+        }
+
+        if (listing.owner_id !== req.user.id) {
             return res.status(403).json({ 
                 status: 'error',
-                message: 'Access denied. Admin privileges or resource ownership required.',
-                error: 'ADMIN_OR_OWNER_REQUIRED'
+                message: 'Access denied. You can only modify your own listings.',
+                error: 'OWNER_REQUIRED'
             });
         }
 
@@ -48,6 +65,5 @@ const isAdminOrOwner = async (req, res, next) => {
         next(error);
     }
 };
-
 
 module.exports = { isAdmin, isAdminOrOwner };

@@ -30,9 +30,19 @@ const Payment = sequelize.define('Payment', {
     transaction_id: {
         type: DataTypes.STRING,
         unique: true
+    },
+    created_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
+    },
+    updated_at: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
 }, {
     timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
     tableName: 'payments'
 });
 

@@ -1,5 +1,5 @@
 const { verifyToken } = require('../config/jwt');
-const User = require('../models/User');
+const { User } = require('../models');
 const { NotFoundError } = require('./errorHandler');
 
 const authenticateToken = async (req, res, next) => {
